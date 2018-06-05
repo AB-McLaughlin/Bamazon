@@ -18,20 +18,21 @@ var connection = MYSQL.createConnection({
 
 connection.connect(function(err) {
   if (err) throw err;
-  console.log(err);
-  displayProducts();
+    displayProducts();
 });
 
+console.log('\n');
+console.log("******Welcome to Bamazon!******" + '\n');
+console.log(" Here are today's deals:" + '\n');
+
     var displayProducts = function() {
-        var displayQuery = 'SELECT * FROM products'
+        var displayQuery = 'SELECT ItemID, ProductName, Price FROM products'
         connection.query(displayQuery, function(err, res) {
-            for (var i = 0; i < res.length; i++) {
-               // console.log("Item ID: " + res[i].ItemID + " || Product: " + res[i].ProductName + " || Price: " + res[i].Price + "");
-               CONSOLETABLE(res);
-            }
-                shop();
-          })
-      };
+            console.table(res);
+                console.log('\n');
+                    shop();
+        })
+    };
 //The app should then prompt users with two messages.
       //* The first should ask them the ID of the product they would like to buy.
       //* The second message should ask how many units of the product they would like to buy.
@@ -40,7 +41,7 @@ connection.connect(function(err) {
             INQUIRER.prompt([{
                 name: "buyID",
                 type: "input",
-                message: "Please input the item ID of the product you would like to buy",
+                message: "Please input the ItemID of the product you would like to purchase",
                 validate: function(value) {
                     if (isNaN(value) == false) {
                         return true;
@@ -51,7 +52,7 @@ connection.connect(function(err) {
             }, {
                 name: "howMany",
                 type: "input",
-                message: "How many would you like to buy?",
+                message: "How many would you like?",
                 validate: function(value) {
                     if (isNaN(value) == false) {
                         return true;
@@ -60,17 +61,21 @@ connection.connect(function(err) {
                     }
                 }
             }]).then(function(answer) {
-                var stockQuery = 'SELECT * FROM Products WHERE itemID=' + answer.howMany;
-                connection.query(query, function(err, res) {
-                  if (answer.howMany <= res) {
+                var stockQuery = 'SELECT QuantityOnHand FROM Products WHERE itemID=' + answer.howMany;
+                connection.query(stockQuery, function(err, res) {
+                    
+                    if (answer.howMany <= res) {
                     for (var i = 0; i < res.length; i++) {
-                        console.log("We currently have " + res[i].stockQuantity + " " + res[i].productName + ".");
-                        console.log("Thank you for your patronage! Your order of "+ res[i].stockQuantity + " " + res[i].productName + " is now being processed.");
+                        console.log("We currently have " + res[i].QuantityOnHand + " " + res[i].productName + ".");
+                        console.log("Thank you for shopping Bamazon! Your order of "+ res[i].QuantityOnHand + " " + res[i].productName + " is now being processed.");
                       }
                     } else {
-                      console.log("Not enough of this product in stock.");
+                      console.log('\n');  
+                      console.log("Sorry, not enough of this product in stock.");
+                      console.log("Is there anything else you would like?");
+                      console.log('\n');  
                     }
-                    displayProducts();
+                        displayProducts();
                 })
             })
         };
@@ -96,5 +101,4 @@ connection.connect(function(err) {
     // })
 // };
     
-
- 
+        
