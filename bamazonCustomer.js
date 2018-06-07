@@ -34,9 +34,8 @@ console.log(" Here are today's deals:" + '\n');
         })
     };
 //The app should then prompt users with two messages.
-      //* The first should ask them the ID of the product they would like to buy.
-      //* The second message should ask how many units of the product they would like to buy.
-
+        //* The first should ask them the ID of the product they would like to buy.
+      
         var shop = function() {
             INQUIRER.prompt([{
                 name: "buyID",
@@ -49,7 +48,9 @@ console.log(" Here are today's deals:" + '\n');
                         return false;
                     }
                 }
-            }, {
+            }, 
+            //* The second message should ask how many units of the product they would like to buy. 
+            {
                 name: "howMany",
                 type: "input",
                 message: "How many would you like?",
@@ -61,44 +62,32 @@ console.log(" Here are today's deals:" + '\n');
                     }
                 }
             }]).then(function(answer) {
-                var stockQuery = 'SELECT QuantityOnHand FROM Products WHERE itemID=' + answer.howMany;
+                var stockQuery = 'SELECT * FROM Products WHERE itemID=' + answer.buyID;
                 connection.query(stockQuery, function(err, res) {
-                    
-                    if (answer.howMany <= res) {
-                    for (var i = 0; i < res.length; i++) {
-                        console.log("We currently have " + res[i].QuantityOnHand + " " + res[i].productName + ".");
-                        console.log("Thank you for shopping Bamazon! Your order of "+ res[i].QuantityOnHand + " " + res[i].productName + " is now being processed.");
-                      }
+                    console.log(answer.buyID,res[0].QuantityOnHand);
+                    if (answer.howMany <= res[0].QuantityOnHand) {
+                    //for (var i = 0; i < res.length; i++) {
+                        
+                        console.log('\n');
+                        console.log("We currently have " + res[0].QuantityOnHand + " " + res[0].ProductName + " available.");
+                        console.log('\n');
+                        console.log("Thank you for shopping Bamazon! Your order of "+ answer.howMany + " " + res[0].ProductName + " is now being processed.");
+                        console.log('\n');
+                        //displayProducts();  
+                      //}
                     } else {
                       console.log('\n');  
-                      console.log("Sorry, not enough of this product in stock.");
+                      console.log("Sorry, not enough of this product in stock to fill your order.");
                       console.log("Is there anything else you would like?");
-                      console.log('\n');  
+                      console.log('\n'); 
+                      //shop();
                     }
-                        displayProducts();
+                     
                 })
             })
         };
 
 
-          //  });
-         // function runSearch() {
-            // inquirer.prompt({
-            //     name: "products",
-            //     type: "list",
-            //     message: "What are you shopping for today?",
-            //     choices: function() {
-            //         var choiceArray = [];
-            //         for (var i = 0; i < results.length; i++) {
-            //           choiceArray.push(results[i].item_id + results[i].product_name + results[i].price);
-            //           console.log (choiceArray.toString());
-            //         }
-            //         return choiceArray;
-            //       },
-            //   })
-        // }
-      
-    // })
-// };
+
     
         
