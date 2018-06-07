@@ -24,6 +24,7 @@ connection.connect(function(err) {
 console.log('\n');
 console.log("******Welcome to Bamazon!******" + '\n');
 console.log(" Here are today's deals:" + '\n');
+console.log('\n');
 
     var displayProducts = function() {
         var displayQuery = 'SELECT ItemID, ProductName, Price FROM products'
@@ -42,10 +43,10 @@ console.log(" Here are today's deals:" + '\n');
                 type: "input",
                 message: "Please input the ItemID of the product you would like to purchase",
                 validate: function(value) {
-                    if (isNaN(value) == false) {
-                        return true;
-                    } else {
+                    if (isNaN === true) {
                         return false;
+                    } else {
+                        return true;
                     }
                 }
             }, 
@@ -55,39 +56,40 @@ console.log(" Here are today's deals:" + '\n');
                 type: "input",
                 message: "How many would you like?",
                 validate: function(value) {
-                    if (isNaN(value) == false) {
-                        return true;
-                    } else {
+                    if (isNaN === true) {
                         return false;
+                    } else {
+                        return true;
                     }
                 }
+                
             }]).then(function(answer) {
                 var stockQuery = 'SELECT * FROM Products WHERE itemID=' + answer.buyID;
                 connection.query(stockQuery, function(err, res) {
-                    console.log(answer.buyID,res[0].QuantityOnHand);
                     if (answer.howMany <= res[0].QuantityOnHand) {
-                    //for (var i = 0; i < res.length; i++) {
-                        
                         console.log('\n');
                         console.log("We currently have " + res[0].QuantityOnHand + " " + res[0].ProductName + " available.");
                         console.log('\n');
                         console.log("Thank you for shopping Bamazon! Your order of "+ answer.howMany + " " + res[0].ProductName + " is now being processed.");
                         console.log('\n');
-                        //displayProducts();  
-                      //}
-                    } else {
+                        console.log("Anything else you need today?  If you are finished, please press Ctrl+C");
+                        console.log('\n');
+                        displayProducts();  
+                      } 
+                      else if (answer.howMany >= res[0].QuantityOnHand) {
                       console.log('\n');  
-                      console.log("Sorry, not enough of this product in stock to fill your order.");
-                      console.log("Is there anything else you would like?");
-                      console.log('\n'); 
-                      //shop();
-                    }
-                     
-                })
-            })
-        };
-
-
-
-    
+                      console.log("Sorry, we have " + res[0].QuantityOnHand + " of " + res[0].ProductName +" in stock to fill your order.");
+                      console.log("Please submit try again");
+                      console.log('\n');
+                        shop();
+                      }   
+                        else{
+                            shop();
+                            };  
+                });
+            });
+        }
         
+        
+        
+            
