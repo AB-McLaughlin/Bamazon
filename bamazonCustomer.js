@@ -71,21 +71,32 @@ console.log('\n');
                         console.log("We currently have " + res[0].QuantityOnHand + " " + res[0].ProductName + " available.");
                         console.log('\n');
                         console.log("Thank you for shopping Bamazon! Your order of "+ answer.howMany + " " + res[0].ProductName + " is now being processed.");
+                        console.log("Total cost: $" + res[0].Price * answer.howMany);
                         console.log('\n');
                         console.log("Anything else you need today?  If you are finished, please press Ctrl+C");
                         console.log('\n');
-                        displayProducts();  
-                      } 
-                      else if (answer.howMany >= res[0].QuantityOnHand) {
+                
+                          //after purchase, updates quantity in Products
+                            var chgQOH = res[0].QuantityOnHand - answer.howMany
+                                var update = 'UPDATE products SET QuantityOnHand=' + chgQOH
+
+                                connection.query(update, function(err, res) {
+                                displayProducts();  
+                                
+                            
+                            }) 
+                }      
+                      else if (answer.howMany > res[0].QuantityOnHand) {
                       console.log('\n');  
                       console.log("Sorry, we have " + res[0].QuantityOnHand + " of " + res[0].ProductName +" in stock to fill your order.");
-                      console.log("Please submit try again");
+                      console.log("Please try again");
                       console.log('\n');
                         shop();
                       }   
                         else{
                             shop();
                             };  
+                
                 });
             });
         }
